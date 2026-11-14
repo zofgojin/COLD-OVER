@@ -33,6 +33,34 @@
   .vol { flex: 1; }
 }
 
+
+  .online-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:rgba(9,15,24,.82);display:flex;flex-direction:column;gap:10px}
+  .online-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .online-card input{min-width:0;flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;background:#08111d;color:var(--fg)}
+  .online-btn{border:1px solid rgba(180,215,255,.4);border-radius:8px;padding:9px 12px;background:#18283b;color:#eaf5ff;font-weight:700}
+  .online-muted{color:var(--muted);font-size:12px}
+  .leaderboard{display:grid;gap:6px}
+  .leader-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:9px;background:rgba(9,15,24,.72)}
+  .leader-row.me{border-color:rgba(150,205,255,.65);background:rgba(70,125,180,.16)}
+  .leader-rank{color:var(--muted);font-variant-numeric:tabular-nums}
+  .leader-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .leader-score{font-variant-numeric:tabular-nums;color:#c5d4e4;font-weight:700}
+
+
+  .leader-pagination{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .leader-page-btn{border:1px solid var(--line);border-radius:8px;padding:8px 13px;background:#101b2a;color:#eaf5ff;font-weight:700}
+  .leader-page-btn:disabled{opacity:.38;cursor:not-allowed}
+  .leader-page-label{min-width:105px;text-align:center;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+
+
+  .my-rank-card{margin-top:14px;padding:13px 14px;border:1px solid #557da4;border-radius:10px;background:linear-gradient(110deg,rgba(36,62,88,.48),rgba(12,20,31,.92))}
+  .my-rank-heading{font-size:11px;letter-spacing:1.1px;font-weight:800;color:#9fc7ee;margin-bottom:9px}
+  .my-rank-row{display:flex;align-items:center;gap:10px;min-width:0}
+  .my-rank-place{flex:0 0 auto;color:#a8c7e8;font-weight:800}
+  .my-rank-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#edf6ff}
+  .my-rank-score{margin-left:auto;white-space:nowrap;color:#d9eaff}
+  .my-rank-caption{margin-top:7px;color:var(--muted);font-size:12px}
+
 </style>
 <title>COLD OVER</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -357,7 +385,8 @@
   <nav class="tabs" aria-label="Разделы">
     <button class="tab active" data-panel="gamePanel">Игра</button>
     <button class="tab" data-panel="rewardsPanel">Награды</button>
-    <button class="tab" data-panel="customPanel">Кастомизация</button>
+    <button class="tab" data-panel="leaderboardPanel">Рейтинг</button>
+    <button class="tab" data-panel="customPanel">Профиль</button>
   </nav>
   <section id="gamePanel" class="tab-panel active">
   <div class="board" id="board">
@@ -387,8 +416,19 @@
     <div class="shop-card locked" id="bg90ShopCard"><img class="shop-preview" src="assets/background-90.webp" alt="90 background"><div class="shop-info"><b>90</b><small>Новый фон COLD OVER</small><button class="shop-buy" id="buyBg90Btn" type="button">Купить · 555 COLD</button></div></div>
     <h3 class="section-head" style="margin:14px 0 0;color:#c5d4e4">Магазин подсветки</h3><p class="hint">Цвет подсветки змеи. Красный доступен сразу.</p><div id="glowShop" class="glow-shop"></div>
   </section>
+  <section id="leaderboardPanel" class="tab-panel" hidden>
+    <div class="section-head"><h2>Таблица лидеров</h2><button class="online-btn" id="refreshLeaderboardBtn" type="button">Обновить</button></div>
+    <p class="hint">Онлайн-рейтинг считает COLD, собранные после создания профиля.</p>
+    <div class="online-card"><div class="online-row"><b id="leaderboardStatus">Подключаемся к рейтингу…</b></div><div id="leaderboardList" class="leaderboard"><div class="online-muted">Загрузка рейтинга…</div></div><div class="leader-pagination" id="leaderboardPagination"><button class="leader-page-btn" id="leaderPrevBtn" type="button" disabled>← Назад</button><span class="leader-page-label" id="leaderPageLabel">Страница 1</span><button class="leader-page-btn" id="leaderNextBtn" type="button" disabled>Вперёд →</button></div><div class="my-rank-card" id="myRankCard"><div class="my-rank-heading">ТВОЙ РЕЗУЛЬТАТ</div><div class="my-rank-row"><span class="my-rank-place" id="myRankPlace">—</span><span class="my-rank-name" id="myRankName">Загрузка профиля…</span><strong class="my-rank-score" id="myRankScore">— COLD</strong></div><div class="my-rank-caption">Твоё место в общем рейтинге</div></div></div>
+  </section>
   <section id="customPanel" class="tab-panel" hidden>
-    <div class="section-head"><h2>Кастомизация</h2></div>
+    <div class="section-head"><h2>Профиль</h2></div>
+    <div class="online-card">
+      <div><b id="profileStatus">Подключаем профиль…</b><div class="online-muted" id="profileOnlineScore">Онлайн COLD: 0</div></div>
+      <label class="online-muted" for="nicknameInput">Игровой никнейм</label>
+      <div class="online-row"><input id="nicknameInput" maxlength="20" placeholder="Твой никнейм" autocomplete="off"><button class="online-btn" id="saveNicknameBtn" type="button">Сохранить</button></div>
+      <div class="online-muted" id="nicknameHint">Никнейм можно менять раз в 24 часа.</div>
+    </div>
     <p class="hint">Выбирай только открытые предметы. Старые скины всегда можно вернуть.</p>
     <div id="customList" class="custom-list"></div>
   </section>
@@ -556,6 +596,7 @@
   });
 
   function start() {
+    runSubmitted = false;
     audio(); autoMusic();
     reset();
     state = 'run'; overlay.hidden = true; pauseBtn.textContent = 'Пауза'; last = performance.now();
@@ -570,11 +611,13 @@
   }
 
   function winGame() {
+    submitOnlineRun();
     state='over'; prestige++; save(); updatePanels();
     ovTitle.textContent='ПОБЕДА'; ovText.textContent='Ты заполнил всё поле! Бриллиантовых дисков: '+prestige+'.';
     ovBtn.textContent='Ещё раз'; overlay.hidden=false;
   }
   function gameOver() {
+    submitOnlineRun();
     state = 'over'; crash();
     var record = sessionRecord;
     if (score > best) { best = score; bestEl.textContent = best; try { localStorage.setItem('coldover-snake-best', String(best)); } catch (e) {} }
@@ -955,7 +998,301 @@
     e.preventDefault();
     switchTab(btn.dataset.panel);
   });
-  updatePanels();applyCosmetics();
+
+  /* ---------- Supabase online profile and leaderboard (v1.1) ---------- */
+  var SUPABASE_URL = 'https://bfigkdsmxlfmdptnwwae.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_qdtArWhtOb2HAlmqBnoKpQ_o7t5pbrs';
+  var sbSession = null, onlineProfile = null, onlineTotal = 0, onlineReady = false;
+  var runSubmitted = false;
+  var profileStatusEl = document.getElementById('profileStatus');
+  var profileScoreEl = document.getElementById('profileOnlineScore');
+  var nicknameInput = document.getElementById('nicknameInput');
+  var nicknameHint = document.getElementById('nicknameHint');
+  var leaderboardStatus = document.getElementById('leaderboardStatus');
+  var leaderboardList = document.getElementById('leaderboardList');
+
+  var myRankCard = document.getElementById('myRankCard');
+  var myRankPlace = document.getElementById('myRankPlace');
+  var myRankName = document.getElementById('myRankName');
+  var myRankScore = document.getElementById('myRankScore');
+
+  async function refreshMyRank() {
+    if (!myRankCard) return;
+    if (!sbSession || !onlineProfile) {
+      myRankName.textContent = 'Подключи профиль';
+      myRankPlace.textContent = '—';
+      myRankScore.textContent = '— COLD';
+      return;
+    }
+    try {
+      var myScore = Number(onlineProfile.total_cold || 0);
+      var greaterUrl = SUPABASE_URL + '/rest/v1/players?select=id&total_cold=gt.' + encodeURIComponent(myScore);
+      var greaterResponse = await fetch(greaterUrl, {
+        method: 'GET',
+        headers: sbHeaders({ 'Prefer': 'count=exact', 'Range-Unit': 'items', 'Range': '0-0' })
+      });
+      if (!greaterResponse.ok) throw new Error('HTTP ' + greaterResponse.status);
+      var greaterRange = greaterResponse.headers.get('Content-Range') || '';
+      var greaterMatch = greaterRange.match(/\/(\d+|\*)$/);
+      if (!greaterMatch || greaterMatch[1] === '*') throw new Error('Не удалось определить место');
+      var ahead = Number(greaterMatch[1]);
+
+      var tieUrl = SUPABASE_URL + '/rest/v1/players?select=id,nickname,total_cold&total_cold=eq.' +
+        encodeURIComponent(myScore) + '&order=nickname.asc,id.asc';
+      var tieResponse = await fetch(tieUrl, { method: 'GET', headers: sbHeaders() });
+      var tieRows = await tieResponse.json();
+      if (!tieResponse.ok) throw new Error('HTTP ' + tieResponse.status);
+      var tieIndex = tieRows.findIndex(function(row) { return row.id === onlineProfile.id; });
+      if (tieIndex < 0) throw new Error('Твой профиль пока не найден в рейтинге');
+      var rank = ahead + tieIndex + 1;
+      myRankPlace.textContent = '#' + rank;
+      myRankName.textContent = onlineProfile.nickname || 'ColdPlayer';
+      myRankScore.textContent = myScore + ' COLD';
+    } catch (e) {
+      myRankPlace.textContent = '—';
+      myRankName.textContent = 'Не удалось определить место';
+      myRankScore.textContent = '';
+    }
+  }
+
+
+  function sbHeaders(extra) {
+    var h = { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (sbSession && sbSession.access_token) h.Authorization = 'Bearer ' + sbSession.access_token;
+    return Object.assign(h, extra || {});
+  }
+  async function sbRequest(path, options) {
+    var response = await fetch(SUPABASE_URL + path, Object.assign({ headers: sbHeaders() }, options || {}));
+    var body = null;
+    try { body = await response.json(); } catch (e) {}
+    if (!response.ok) {
+      var message = body && (body.msg || body.message || body.error_description || body.error) || ('HTTP ' + response.status);
+      throw new Error(message);
+    }
+    return body;
+  }
+  function randomNickname() {
+    return 'ColdPlayer_' + Math.floor(1000 + Math.random() * 9000);
+  }
+  function setProfileStatus(message) {
+    if (profileStatusEl) profileStatusEl.textContent = message;
+  }
+  function updateOnlineScoreLabel() {
+    if (profileScoreEl) profileScoreEl.textContent = 'Онлайн COLD: ' + onlineTotal;
+  }
+  async function ensureAnonymousSession() {
+    try {
+      var saved = localStorage.getItem('coldover-supabase-session');
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        if (parsed && parsed.access_token && parsed.expires_at && parsed.expires_at * 1000 > Date.now() + 60000) {
+          sbSession = parsed;
+          return;
+        }
+        if (parsed && parsed.refresh_token) {
+          var refreshed = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+            method: 'POST', headers: sbHeaders(), body: JSON.stringify({ refresh_token: parsed.refresh_token })
+          });
+          if (refreshed.ok) {
+            sbSession = await refreshed.json();
+            sbSession.expires_at = Math.floor(Date.now()/1000) + (sbSession.expires_in || 3600);
+            localStorage.setItem('coldover-supabase-session', JSON.stringify(sbSession));
+            return;
+          }
+        }
+      }
+    } catch (e) {}
+    var response = await fetch(SUPABASE_URL + '/auth/v1/signup', {
+      method: 'POST', headers: sbHeaders(), body: JSON.stringify({})
+    });
+    var data = await response.json();
+    if (!response.ok || !data.access_token) throw new Error(data.msg || data.message || 'Не удалось войти анонимно');
+    sbSession = data;
+    sbSession.expires_at = Math.floor(Date.now()/1000) + (sbSession.expires_in || 3600);
+    localStorage.setItem('coldover-supabase-session', JSON.stringify(sbSession));
+  }
+  async function loadOrCreateOnlineProfile() {
+    var rows = await sbRequest('/rest/v1/players?select=id,nickname,total_cold,nickname_changed_at&id=eq.' + encodeURIComponent(sbSession.user.id) + '&limit=1');
+    if (rows && rows.length) {
+      onlineProfile = rows[0];
+    } else {
+      var nickname = randomNickname();
+      var created = await sbRequest('/rest/v1/players?select=id,nickname,total_cold,nickname_changed_at', {
+        method: 'POST',
+        headers: sbHeaders({ 'Prefer': 'return=representation' }),
+        body: JSON.stringify({ id: sbSession.user.id, nickname: nickname, total_cold: 0 })
+      });
+      onlineProfile = created && created[0] ? created[0] : { id: sbSession.user.id, nickname: nickname, total_cold: 0 };
+    }
+    onlineTotal = Number(onlineProfile.total_cold || 0);
+    onlineReady = true;
+    if (nicknameInput) nicknameInput.value = onlineProfile.nickname || '';
+    setProfileStatus('Профиль активен · ' + (onlineProfile.nickname || 'Игрок'));
+    updateOnlineScoreLabel();
+  }
+  async function initOnline() {
+    try {
+      setProfileStatus('Подключаемся к Supabase…');
+      if (leaderboardStatus) leaderboardStatus.textContent = 'Подключаемся к рейтингу…';
+      await ensureAnonymousSession();
+      await loadOrCreateOnlineProfile();
+      await refreshLeaderboard();
+      await flushPendingOnlineRuns();
+    } catch (e) {
+      setProfileStatus('Не удалось подключить профиль');
+      if (leaderboardStatus) leaderboardStatus.textContent = 'Ошибка подключения: ' + e.message;
+      if (nicknameHint) nicknameHint.textContent = 'Проверь подключение и настройки Supabase. Прогресс игры продолжает сохраняться локально.';
+    }
+  }
+  var leaderboardPage = 0;
+  var leaderboardPageSize = 10;
+  var leaderboardTotalRows = 0;
+  async function refreshLeaderboard() {
+    if (!leaderboardList) return;
+    if (!sbSession) {
+      leaderboardList.textContent = 'Сначала подключи профиль во вкладке «Профиль».';
+      return;
+    }
+    try {
+      var from = leaderboardPage * leaderboardPageSize;
+      var to = from + leaderboardPageSize - 1;
+      var response = await fetch(SUPABASE_URL + '/rest/v1/players?select=id,nickname,total_cold&order=total_cold.desc,nickname.asc,id.asc', {
+        method: 'GET',
+        headers: sbHeaders({
+          'Prefer': 'count=exact',
+          'Range-Unit': 'items',
+          'Range': from + '-' + to
+        })
+      });
+      var rows = await response.json();
+      if (!response.ok) {
+        var message = rows && (rows.message || rows.msg || rows.error) || ('HTTP ' + response.status);
+        throw new Error(message);
+      }
+      var contentRange = response.headers.get('Content-Range') || '';
+      var totalMatch = contentRange.match(/\/(\d+|\*)$/);
+      leaderboardTotalRows = totalMatch && totalMatch[1] !== '*' ? Number(totalMatch[1]) : (from + rows.length);
+      var pageCount = Math.max(1, Math.ceil(leaderboardTotalRows / leaderboardPageSize));
+      if (leaderboardPage >= pageCount) {
+        leaderboardPage = Math.max(0, pageCount - 1);
+        return refreshLeaderboard();
+      }
+      leaderboardList.innerHTML = '';
+      if (!rows || !rows.length) {
+        leaderboardList.textContent = 'Пока игроков нет. Стань первым!';
+      } else {
+        rows.forEach(function (player, index) {
+          var row = document.createElement('div');
+          row.className = 'leader-row' + (onlineProfile && player.id === onlineProfile.id ? ' me' : '');
+          var rank = document.createElement('span');
+          rank.className = 'leader-rank';
+          rank.textContent = '#' + (from + index + 1);
+          var name = document.createElement('span');
+          name.className = 'leader-name';
+          name.textContent = player.nickname || 'ColdPlayer';
+          var value = document.createElement('span');
+          value.className = 'leader-score';
+          value.textContent = Number(player.total_cold || 0) + ' COLD';
+          row.appendChild(rank); row.appendChild(name); row.appendChild(value);
+          leaderboardList.appendChild(row);
+        });
+      }
+      var prevBtn = document.getElementById('leaderPrevBtn');
+      var nextBtn = document.getElementById('leaderNextBtn');
+      var pageLabel = document.getElementById('leaderPageLabel');
+      if (prevBtn) prevBtn.disabled = leaderboardPage <= 0;
+      if (nextBtn) nextBtn.disabled = leaderboardPage + 1 >= pageCount;
+      if (pageLabel) {
+        var firstRank = leaderboardTotalRows ? from + 1 : 0;
+        var lastRank = Math.min(from + rows.length, leaderboardTotalRows);
+        pageLabel.textContent = 'Страница ' + (leaderboardPage + 1) + ' из ' + pageCount +
+          (leaderboardTotalRows ? ' · ' + firstRank + '–' + lastRank : '');
+      }
+      if (leaderboardStatus) leaderboardStatus.textContent = 'Топ игроков · ' + leaderboardTotalRows + ' всего';
+      await refreshMyRank();
+    } catch (e) {
+      if (leaderboardStatus) leaderboardStatus.textContent = 'Не удалось загрузить рейтинг: ' + e.message;
+    }
+  }
+  document.getElementById('leaderPrevBtn').addEventListener('click', function () {
+    if (leaderboardPage > 0) { leaderboardPage--; refreshLeaderboard(); }
+  });
+  document.getElementById('leaderNextBtn').addEventListener('click', function () {
+    var pageCount = Math.max(1, Math.ceil(leaderboardTotalRows / leaderboardPageSize));
+    if (leaderboardPage + 1 < pageCount) { leaderboardPage++; refreshLeaderboard(); }
+  });
+  async function saveOnlineNickname() {
+    if (!onlineReady || !onlineProfile) { if (nicknameHint) nicknameHint.textContent = 'Профиль ещё подключается.'; return; }
+    var nickname = (nicknameInput.value || '').trim();
+    if (!/^[A-Za-zА-Яа-яЁё0-9_]{3,20}$/.test(nickname)) {
+      nicknameHint.textContent = 'Используй 3–20 символов: буквы, цифры или _.';
+      return;
+    }
+    var changedAt = onlineProfile.nickname_changed_at ? new Date(onlineProfile.nickname_changed_at).getTime() : 0;
+    if (changedAt && Date.now() - changedAt < 24 * 60 * 60 * 1000) {
+      var hours = Math.ceil((24 * 60 * 60 * 1000 - (Date.now() - changedAt)) / 3600000);
+      nicknameHint.textContent = 'Никнейм можно будет изменить примерно через ' + hours + ' ч.';
+      return;
+    }
+    try {
+      var updated = await sbRequest('/rest/v1/players?id=eq.' + encodeURIComponent(sbSession.user.id), {
+        method: 'PATCH',
+        headers: sbHeaders({ 'Prefer': 'return=representation' }),
+        body: JSON.stringify({ nickname: nickname, nickname_changed_at: new Date().toISOString() })
+      });
+      if (updated && updated[0]) onlineProfile = updated[0];
+      else onlineProfile.nickname = nickname;
+      nicknameHint.textContent = 'Никнейм сохранён.';
+      setProfileStatus('Профиль активен · ' + nickname);
+      await refreshLeaderboard();
+    } catch (e) {
+      nicknameHint.textContent = 'Не удалось сохранить никнейм: ' + e.message;
+    }
+  }
+  function getPendingOnlineRuns() {
+    try { return JSON.parse(localStorage.getItem('coldover-pending-online-runs') || '[]').filter(function(n){return Number.isInteger(n)&&n>=0&&n<=256;}); }
+    catch(e) { return []; }
+  }
+  function savePendingOnlineRuns(runs) {
+    try { localStorage.setItem('coldover-pending-online-runs', JSON.stringify(runs)); } catch(e) {}
+  }
+  async function flushPendingOnlineRuns() {
+    if (!onlineReady || !sbSession || !onlineProfile) return;
+    var pending = getPendingOnlineRuns();
+    while (pending.length) {
+      var runScore = pending[0];
+      var newTotal = onlineTotal + runScore;
+      try {
+        await sbRequest('/rest/v1/rpc/update_my_score', {
+          method: 'POST',
+          body: JSON.stringify({ new_total: newTotal, run_score: runScore })
+        });
+        onlineTotal = newTotal;
+        onlineProfile.total_cold = newTotal;
+        pending.shift();
+        savePendingOnlineRuns(pending);
+        updateOnlineScoreLabel();
+      } catch (e) {
+        if (nicknameHint) nicknameHint.textContent = 'Есть неотправленные результаты. Они сохранены в этом браузере и будут отправлены при следующем подключении. Ошибка: ' + e.message;
+        break;
+      }
+    }
+    if (!pending.length) refreshLeaderboard();
+  }
+  async function submitOnlineRun() {
+    if (runSubmitted || score <= 0) return;
+    runSubmitted = true;
+    var runScore = Math.min(256, Math.max(0, Number(score) || 0));
+    var pending = getPendingOnlineRuns();
+    pending.push(runScore);
+    savePendingOnlineRuns(pending);
+    await flushPendingOnlineRuns();
+  }
+  document.getElementById('saveNicknameBtn').addEventListener('click', saveOnlineNickname);
+  document.getElementById('refreshLeaderboardBtn').addEventListener('click', refreshLeaderboard);
+  initOnline();
+
+    updatePanels();applyCosmetics();
 
 
   reset();
