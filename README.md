@@ -29,9 +29,6 @@
 - **Играть в COLD OVER:** https://zofgojin.github.io/COLD-OVER/
 - **GitHub проекта:** https://github.com/zofgojin/COLD-OVER
 
----
-
-
 ## 💬 Сообщество и обсуждения
 
 Хочешь предложить новую функцию, сообщить об ошибке или пообщаться с другими игроками?
