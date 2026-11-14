@@ -48,4 +48,4 @@
 ---
 
 *Created by zofgojin*  
-**COLD OVER v1.0**
+**COLD OVER v1.1**
